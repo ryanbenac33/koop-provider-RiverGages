@@ -1,0 +1,7 @@
+{
+    "rivergagesdata": {
+      "baseurl": "https://rivergages.mvr.usace.army.mil/WaterControl/shefdata2.cfm?",
+      "port": 8080,
+      "devMode": false
+    }
+  }
