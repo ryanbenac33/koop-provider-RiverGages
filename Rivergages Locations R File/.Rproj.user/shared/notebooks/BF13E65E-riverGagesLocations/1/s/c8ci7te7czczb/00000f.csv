@@ -1,0 +1,4 @@
+"0","link <- ""https://rivergages.mvr.usace.army.mil/WaterControl/stationinfo2.cfm?sid=LANM5&fid=LANM5&dt=S"""
+"0","my_data <- read_excel(""google_earth_142.xlsx"")"
+"0",""
+"0","my_data$LocationName <- """""

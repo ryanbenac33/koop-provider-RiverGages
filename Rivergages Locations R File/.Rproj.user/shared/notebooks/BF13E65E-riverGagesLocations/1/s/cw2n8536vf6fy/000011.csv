@@ -1,0 +1,5 @@
+"0","my_data$Name[my_data$Name == 'Lock 15 (MET Station)'] <- 'RCKI2'"
+"0","my_data$Name[my_data$Name == 'Lock 14 (MET Station)'] <- 'LECI4'"
+"0","my_data$Name[my_data$Name == 'L and D 19'] <- 'MI19'"
+"0","my_data$Name[my_data$Name == '1'] <- 'MI19'"
+"0","my_data <- subset(my_data,Name!='1' )"

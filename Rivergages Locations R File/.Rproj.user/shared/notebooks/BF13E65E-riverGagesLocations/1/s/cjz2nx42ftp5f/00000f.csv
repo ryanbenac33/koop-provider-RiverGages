@@ -1,0 +1,3 @@
+"0","jsonVersion <- toJSON(my_data)"
+"0","write_json(jsonVersion, ""rivergages_locations.json"")"
+"0",""

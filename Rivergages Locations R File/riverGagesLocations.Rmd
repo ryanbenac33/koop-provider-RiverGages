@@ -1,0 +1,83 @@
+---
+title: "pullUniqueLocations"
+author: "ryan.benac"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+Libraries
+```{r}
+require(rvest)
+require(readxl)
+require(jsonlite)
+```
+
+Add first example link and read in data table
+```{r}
+link <- "https://rivergages.mvr.usace.army.mil/WaterControl/stationinfo2.cfm?sid=LANM5&fid=LANM5&dt=S"
+my_data <- read_excel("google_earth_142.xlsx")
+
+my_data$LocationName <- ""
+```
+
+Write code for single location name pull
+```{r}
+page <- read_html(link)
+
+summaries_xpath <- page %>%
+  html_elements(xpath = "//*[contains(@class, 'style11')]")
+
+summaries_xpath = summaries_xpath[2]
+
+summaries_xpath <- gsub('<div align="center" class="style11"><b>','',summaries_xpath)
+summaries_xpath <- gsub('</b></div>','',summaries_xpath)
+
+summaries_xpath
+
+```
+
+Fix data table
+```{r}
+my_data$Name[my_data$Name == 'Lock 15 (MET Station)'] <- 'RCKI2'
+my_data$Name[my_data$Name == 'Lock 14 (MET Station)'] <- 'LECI4'
+my_data$Name[my_data$Name == 'L and D 19'] <- 'MI19'
+my_data$Name[my_data$Name == '1'] <- 'MI19'
+my_data <- subset(my_data,Name!='1' )
+```
+
+Loop through and add location name to table
+```{r}
+for (i in 1:nrow(my_data)) {
+  currentID <- my_data[i,3]
+
+  link <- paste("https://rivergages.mvr.usace.army.mil/WaterControl/stationinfo2.cfm?sid=", currentID, "&fid=", currentID, "&dt=S", sep="")
+
+  page <- read_html(link)
+
+  summaries_xpath <- page %>%
+    html_elements(xpath = "//*[contains(@class, 'style11')]")
+  
+  summaries_xpath = summaries_xpath[2]
+  
+  summaries_xpath <- gsub('<div align="center" class="style11"><b>','',summaries_xpath)
+  summaries_xpath <- gsub('</b></div>','',summaries_xpath)
+  
+  # if no data, then mark location as no data configured
+  if (summaries_xpath == "") {
+    summaries_xpath <- "No Data Configured For This Station"
+  }
+  
+  my_data[i,4] = summaries_xpath
+  
+  
+  
+  print(paste("Current location: ", i, "/", nrow(my_data), ": ", summaries_xpath, sep=""))
+}
+```
+
+Write to a JSON file
+```{r}
+jsonVersion <- toJSON(my_data)
+write_json(jsonVersion, "rivergages_locations.json")
+```
+
